@@ -1,8 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import connectDB from "../config/db.js";
+import connectDB from "./config/db.js";
+import userRoute from "./routes/userroute.js";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(cors());
 app.use(express.json());
 
 //Routes 
+app.use("/api/user" , userRoute);
+
 app.get("/" , (req , res) =>{
     res.send("Welcome to the TalentIQ Backend");
 });
