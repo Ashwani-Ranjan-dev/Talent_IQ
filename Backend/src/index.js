@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import connectDB from "./config/db.js";
+import cookieParser from "cookie-parser";
 import userRoute from "./routes/userroute.js";
+import authroute from "./routes/authroute.js";
 
 dotenv.config();
 
@@ -18,8 +20,15 @@ app.use(cors());
 // Middleware to parse the json body
 app.use(express.json());
 
+// Middleware for the Cookie-parser
+app.use(cookieParser());
+
+
+
 //Routes 
 app.use("/api/user" , userRoute);
+
+app.use("/api/auth" , authroute );
 
 app.get("/" , (req , res) =>{
     res.send("Welcome to the TalentIQ Backend");
