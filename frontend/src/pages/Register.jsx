@@ -34,6 +34,21 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation Check in the Frontend
+    if(!formData.name.trim()){
+      return toast.error("Name is required");
+    }
+    if(!formData.email.trim()){
+      return toast.error("Email is required");
+    }
+    if(!formData.password.trim()){
+      return toast.error("Password is required");
+    }
+    if(formData.password.length < 6){
+      return toast.error("Password must be at least 6 characters");
+    }
+
+
     try {
       setLoading(true);
 
@@ -49,7 +64,7 @@ function Register() {
       });
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Registration Failed"
+        error.response?.data?.message || "Something went wrong"
       );
     } finally {
       setLoading(false);

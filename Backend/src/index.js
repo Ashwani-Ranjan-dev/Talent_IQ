@@ -15,7 +15,12 @@ connectDB();
 const app = express();
 
 // Middleware to parse the cross origin request
-app.use(cors());
+app.use(
+    cors({
+        origin : "http://localhost:5173",
+        credentials: true,
+    })
+);
 
 // Middleware to parse the json body
 app.use(express.json());
