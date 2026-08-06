@@ -92,11 +92,11 @@ export const login = async (req, res) => {
             });
         }
 
-        const token = generatetoken(user.id);
+        const token = await  generatetoken(user.id);
         res.cookie("token", token, {
             httpOnly: true,
             secure: false,
-            samesite: "lax",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -121,6 +121,43 @@ export const login = async (req, res) => {
     }
 };
 
+export const currentUser = async (req, res) => {
+    try {
+        res.status(200).json({
+            success: true,
+            data: req.user
+        })
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
 
+export const logout = async (req, res) => {
+    try {
+        //Deleting the Cookie 
+        //Note:- Cookie  option should match when it is created during login
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        });
 
+        // Sending message after successful logout
+        return res.status(200).json({
+            success: "true",
+            message: "Logout Successful"
+        });
+    }
+    catch (error) {
+        //Catching error if something error happen
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
 
+    }
+}
