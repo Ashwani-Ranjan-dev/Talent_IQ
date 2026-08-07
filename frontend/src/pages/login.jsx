@@ -6,73 +6,60 @@ import InputField from "../components/InputField";
 import Button from "../components/Button";
 
 import { loginUser } from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 
-function Login(){
-    const[formData , setformData] = useState({
-        email : "",
-        password : ""
+function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  //Fetching User detail
+  const { fetchCurrentUser } = useAuth();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const [loading ,  setloading] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const navigate = useNavigate();
+    if (!formData.email.trim()) {
+      return toast.error("Email is required");
+    }
 
-    const handleChange = (e) =>{
-        setformData({
-            ...formData,
-            [e.target.name] : e.target.value,
-        });
-    };
+    if (!formData.password.trim()) {
+      return toast.error("Password is required");
+    }
 
-    const handleSubmit  = async (e)=>{
-        e.preventDefault();
+    try {
+      setLoading(true);
 
-        if(!formData.email.trim()){
-            return toast.error("Email is required");
-        }
+      const response = await loginUser(formData);
+      toast.success(response.data.message);
 
-        if(!formData.password.trim()){
-            return toast.error("Password is required");
-        }
+      await fetchCurrentUser();
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try{
-            setloading(true);
-
-            const response = await loginUser(formData);
-
-            toast.success(response.data.message);
-
-            localStorage.setItem(
-              "user",
-              JSON.stringify(response.data.data)
-            );
-
-            navigate("/dashboard");
-        }
-        catch(error){
-            toast.error(
-        error.response?.data?.message || "Login Failed"
-      );
-        }
-        finally{
-            setloading(false);
-        }
-    };
-
-    return (
+  return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-xl p-8 w-[420px]">
-
-        <h1 className="text-3xl font-bold text-center mb-2">
-          TalentIQ
-        </h1>
-
-        <p className="text-center text-gray-500 mb-8">
-          Login to continue
-        </p>
+        <h1 className="text-3xl font-bold text-center mb-2">TalentIQ</h1>
+        <p className="text-center text-gray-500 mb-8">Login to continue</p>
 
         <form onSubmit={handleSubmit}>
-
           <InputField
             label="Email"
             name="email"
@@ -91,13 +78,8 @@ function Login(){
             placeholder="Enter your password"
           />
 
-          <Button
-            text="Login"
-            loading={loading}
-          />
-
+          <Button text="Login" loading={loading} />
         </form>
-
       </div>
     </div>
   );

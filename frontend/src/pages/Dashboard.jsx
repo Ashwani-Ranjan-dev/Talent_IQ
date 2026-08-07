@@ -1,7 +1,15 @@
+import Loading from "../components/Loading";
+import { useAuth } from "../context/AuthContext";
+
 function Dashboard() {
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const { user, loading } = useAuth();
+    console.log("User in Dashboard:", user);
 
+
+    if(loading){
+        return <Loading/>;
+    }
     return (
 
         <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white">
