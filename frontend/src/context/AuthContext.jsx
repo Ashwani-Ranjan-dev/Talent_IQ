@@ -10,6 +10,7 @@ export const AuthProvider = ({children}) =>{
 
     const [loading , setLoading] = useState(true);
 
+    // Fetching User in through Frontend
     const fetchCurrentUser = async() =>{
         try{
 
@@ -24,6 +25,18 @@ export const AuthProvider = ({children}) =>{
         }
     };
 
+    // Logout Function 
+    const logout = async() =>{
+        try{
+            await api.post("/auth/logout");
+            setUser(null);
+        }
+        catch(error){
+            console.error("Logout failed: " , error);
+        }
+    };
+
+
     useEffect(() => {
         fetchCurrentUser();
     } , []);
@@ -35,7 +48,8 @@ export const AuthProvider = ({children}) =>{
             user,
             setUser,
             loading,
-            fetchCurrentUser
+            fetchCurrentUser,
+            logout
         }}
         >
             {children}
@@ -43,4 +57,6 @@ export const AuthProvider = ({children}) =>{
     )
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    return useContext(AuthContext);
+}

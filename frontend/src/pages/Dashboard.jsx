@@ -1,45 +1,70 @@
-import Loading from "../components/Loading";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Dashboard() {
 
-    const { user, loading } = useAuth();
-    console.log("User in Dashboard:", user);
+    const { user, loading, logout } = useAuth();
 
+    const navigate = useNavigate();
 
-    if(loading){
-        return <Loading/>;
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                Loading...
+            </div>
+        );
     }
+
+    const handleLogout = async () => {
+
+        await logout();
+
+        navigate("/");
+
+    };
+
     return (
+        <div className="min-h-screen bg-slate-900 text-white p-8">
 
-        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white">
+            <div className="max-w-5xl mx-auto">
 
-            <h1 className="text-5xl font-bold">
+                <div className="flex justify-between items-center">
 
-                TalentIQ Dashboard
+                    <div>
+                        <h1 className="text-4xl font-bold">
+                            TalentIQ Dashboard
+                        </h1>
 
-            </h1>
+                        <p className="mt-2 text-gray-300">
+                            Welcome, {user?.name}
+                        </p>
+                    </div>
 
-            <h2 className="text-2xl mt-6">
+                    <button
+                        onClick={handleLogout}
+                        className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition"
+                    >
+                        Logout
+                    </button>
 
-                Welcome,
+                </div>
 
-                {user?.name}
+                <div className="mt-10">
 
-            </h2>
+                    <p className="text-gray-300">
+                        Email: {user?.email}
+                    </p>
 
-            <p className="mt-2">
+                    <p className="text-gray-300 mt-2">
+                        Role: {user?.role}
+                    </p>
 
-                Role :
+                </div>
 
-                {user?.role}
-
-            </p>
+            </div>
 
         </div>
-
     );
-
 }
 
 export default Dashboard;
